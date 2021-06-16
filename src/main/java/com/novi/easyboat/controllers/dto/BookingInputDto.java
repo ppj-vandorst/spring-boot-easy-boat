@@ -1,7 +1,6 @@
 package com.novi.easyboat.controllers.dto;
 
 import com.novi.easyboat.model.Booking;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -15,8 +14,8 @@ public class BookingInputDto {
 
     public Booking toBooking() {
         var booking = new Booking();
-        booking.setStartTime(startTime);
-        booking.setEndTime(endTime);
+        booking.setPlannedStartTime(startTime);
+        booking.setPlannedEndTime(endTime);
         return booking;
     }
 }

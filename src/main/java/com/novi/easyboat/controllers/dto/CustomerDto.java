@@ -1,6 +1,5 @@
 package com.novi.easyboat.controllers.dto;
 
-import com.novi.easyboat.model.Boat;
 import com.novi.easyboat.model.Customer;
 
 public class CustomerDto {

@@ -1,6 +1,5 @@
 package com.novi.easyboat.services;
 
-import com.novi.easyboat.exceptions.BadRequestException;
 import com.novi.easyboat.exceptions.NotFoundException;
 import com.novi.easyboat.model.Skipper;
 import com.novi.easyboat.repositories.BoatRepository;

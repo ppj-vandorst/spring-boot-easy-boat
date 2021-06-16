@@ -1,7 +1,6 @@
 package com.novi.easyboat.services;
 
 import com.novi.easyboat.model.Customer;
-import com.novi.easyboat.repositories.BoatRepository;
 import com.novi.easyboat.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

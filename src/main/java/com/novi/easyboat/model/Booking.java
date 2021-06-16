@@ -19,9 +19,19 @@ public class Booking {
     @ManyToOne
     Customer customer;
 
-    LocalDateTime startTime;
+    LocalDateTime plannedStartTime;
 
-    LocalDateTime endTime;
+    LocalDateTime plannedEndTime;
+
+    LocalDateTime actualStartTime;
+
+    LocalDateTime actualEndTime;
+
+    Double charge;
+
+    BookingStatus status;
+
+    String discountCode;
 
     // Getters
     public Long getId() {
@@ -36,12 +46,32 @@ public class Booking {
         return customer;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getPlannedStartTime() {
+        return plannedStartTime;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public LocalDateTime getPlannedEndTime() {
+        return plannedEndTime;
+    }
+
+    public LocalDateTime getActualStartTime() {
+        return actualStartTime;
+    }
+
+    public LocalDateTime getActualEndTime() {
+        return actualEndTime;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public Double getCharge() {
+        return charge;
+    }
+
+    public String getDiscountCode() {
+        return discountCode;
     }
 
     // Setters
@@ -57,11 +87,31 @@ public class Booking {
         this.customer = customer;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public void setPlannedStartTime(LocalDateTime plannedStartTime) {
+        this.plannedStartTime = plannedStartTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setPlannedEndTime(LocalDateTime plannedEndTime) {
+        this.plannedEndTime = plannedEndTime;
+    }
+
+    public void setActualStartTime(LocalDateTime actualStartTime) {
+        this.actualStartTime = actualStartTime;
+    }
+
+    public void setActualEndTime(LocalDateTime actualEndTime) {
+        this.actualEndTime = actualEndTime;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
+
+    public void setCharge(Double charge) {
+        this.charge = charge;
+    }
+
+    public void setDiscountCode(String discountCode) {
+        this.discountCode = discountCode;
     }
 }

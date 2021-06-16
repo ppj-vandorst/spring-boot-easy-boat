@@ -1,6 +1,7 @@
 package com.novi.easyboat.controllers;
 
-import com.novi.easyboat.controllers.dto.*;
+import com.novi.easyboat.controllers.dto.CustomerDto;
+import com.novi.easyboat.controllers.dto.CustomerInputDto;
 import com.novi.easyboat.model.Customer;
 import com.novi.easyboat.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;

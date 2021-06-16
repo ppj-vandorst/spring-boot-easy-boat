@@ -2,7 +2,9 @@ package com.novi.easyboat.services;
 
 import com.novi.easyboat.exceptions.BadRequestException;
 import com.novi.easyboat.exceptions.NotFoundException;
+import com.novi.easyboat.model.Boat;
 import com.novi.easyboat.model.Booking;
+import com.novi.easyboat.model.BookingStatus;
 import com.novi.easyboat.repositories.BoatRepository;
 import com.novi.easyboat.repositories.BookingRepository;
 import com.novi.easyboat.repositories.CustomerRepository;
@@ -17,17 +19,20 @@ public class BookingServiceImpl implements BookingService {
     private BookingRepository bookingRepository;
     private BoatRepository boatRepository;
     private CustomerRepository customerRepository;
+    private CalculationService calculationService;
 
     @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository, BoatRepository boatRepository, CustomerRepository customerRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository, BoatRepository boatRepository,
+                              CustomerRepository customerRepository, CalculationService calculationService) {
         this.bookingRepository = bookingRepository;
         this.boatRepository = boatRepository;
         this.customerRepository = customerRepository;
+        this.calculationService = calculationService;
     }
 
     @Override
     public List<Booking> getBookingsBetweenDates(LocalDateTime start, LocalDateTime end) {
-        return bookingRepository.findByStartTimeBetween(start, end);
+        return bookingRepository.findByPlannedStartTimeBetween(start, end);
     }
 
     @Override
@@ -55,25 +60,62 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking saveBooking(Booking booking, Long boatId, Long customerId) {
+    public Booking planBooking(Long boatId, Long customerId, LocalDateTime plannedStartTime, LocalDateTime plannedEndTime) {
         var optionalCustomer = customerRepository.findById(customerId);
         var optionalBoat = boatRepository.findById(boatId);
 
-        if (optionalCustomer.isPresent() && optionalBoat.isPresent()) {
-            var customer = optionalCustomer.get();
-            var boat = optionalBoat.get();
-
-            var overlappingStartBookings = bookingRepository.findByStartTimeBetweenAndBoat(booking.getStartTime(), booking.getEndTime(), boat);
-            var overlappingEndBookings = bookingRepository.findByEndTimeBetweenAndBoat(booking.getStartTime(), booking.getEndTime(), boat);
-            if (overlappingStartBookings.size() > 0 || overlappingEndBookings.size() > 0) {
-                throw new BadRequestException();
-            }
-
-            booking.setCustomer(customer);
-            booking.setBoat(boat);
-            return bookingRepository.save(booking);
-        } else {
+        // If either the customer or boat does not exist, we throw an exception
+        if (optionalCustomer.isEmpty() || optionalBoat.isEmpty()) {
             throw new NotFoundException();
         }
+
+        var customer = optionalCustomer.get();
+        var boat = optionalBoat.get();
+
+        // Checks whether there is an overlap in the schedule, if there is an overlap it throws an exception
+        validateBookingSlotIsFree(plannedStartTime, plannedEndTime, boat);
+
+        // The booking details are valid, we create it and store it in the database
+        var booking = new Booking();
+        booking.setCustomer(customer);
+        booking.setBoat(boat);
+        booking.setPlannedStartTime(plannedStartTime);
+        booking.setPlannedEndTime(plannedEndTime);
+        booking.setStatus(BookingStatus.PLANNED);
+
+        return bookingRepository.save(booking);
+    }
+
+    private void validateBookingSlotIsFree(LocalDateTime startTime, LocalDateTime endTime, Boat boat) {
+        var overlappingStartBookings = bookingRepository.findByPlannedStartTimeBetweenAndBoat(startTime,
+                endTime, boat);
+        var overlappingEndBookings = bookingRepository.findByPlannedEndTimeBetweenAndBoat(startTime,
+                endTime, boat);
+        if (overlappingStartBookings.size() > 0 || overlappingEndBookings.size() > 0) {
+            throw new BadRequestException();
+        }
+    }
+
+    @Override
+    public Booking completeBooking(Long bookingId, LocalDateTime actualStartTime, LocalDateTime actualEndTime) {
+        var optionalBooking = bookingRepository.findById(bookingId);
+
+        if (optionalBooking.isEmpty()) {
+            throw new NotFoundException();
+        }
+        var booking = optionalBooking.get();
+
+        // Calculate the booking charge
+        var baseCharge = calculationService.calculateCharge(actualStartTime, actualEndTime);
+        var discount = calculationService.calculateDiscount(baseCharge, booking.getDiscountCode());
+        var charge = baseCharge - discount;
+
+        // Update and save the booking
+        booking.setActualStartTime(actualStartTime);
+        booking.setActualEndTime(actualEndTime);
+        booking.setStatus(BookingStatus.INVOICED);
+        booking.setCharge(charge);
+
+        return bookingRepository.save(booking);
     }
 }

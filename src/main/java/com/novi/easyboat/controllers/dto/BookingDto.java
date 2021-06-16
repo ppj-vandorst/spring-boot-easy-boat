@@ -1,6 +1,5 @@
 package com.novi.easyboat.controllers.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.novi.easyboat.model.Booking;
@@ -28,8 +27,8 @@ public class BookingDto {
         dto.id = booking.getId();
         dto.boat = BoatDto.fromBoat(booking.getBoat());
         dto.customer = CustomerDto.fromCustomer(booking.getCustomer());
-        dto.startTime = booking.getStartTime();
-        dto.endTime = booking.getEndTime();
+        dto.startTime = booking.getPlannedStartTime();
+        dto.endTime = booking.getPlannedEndTime();
         return dto;
     }
 }

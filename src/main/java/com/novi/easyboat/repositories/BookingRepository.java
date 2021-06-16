@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
+    List<Booking> findByPlannedStartTimeBetween(LocalDateTime start, LocalDateTime end);
 
     List<Booking> findByCustomer(Customer customer);
 
     List<Booking> findByBoat(Boat boat);
 
-    List<Booking> findByStartTimeBetweenAndBoat(LocalDateTime start, LocalDateTime end, Boat boat);
+    List<Booking> findByPlannedStartTimeBetweenAndBoat(LocalDateTime start, LocalDateTime end, Boat boat);
 
-    List<Booking> findByEndTimeBetweenAndBoat(LocalDateTime start, LocalDateTime end, Boat boat);
+    List<Booking> findByPlannedEndTimeBetweenAndBoat(LocalDateTime start, LocalDateTime end, Boat boat);
 }
