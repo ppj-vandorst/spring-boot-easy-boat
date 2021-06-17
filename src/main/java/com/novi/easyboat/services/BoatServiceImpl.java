@@ -40,4 +40,13 @@ public class BoatServiceImpl implements BoatService {
     public void deleteBoat(Long id) {
         repository.deleteById(id);
     }
+
+
+    public int add(int val1, int val2) {
+        if(val1 > 10000) {
+            throw new RuntimeException("error");
+        }
+
+        return val1 + val2;
+    }
 }

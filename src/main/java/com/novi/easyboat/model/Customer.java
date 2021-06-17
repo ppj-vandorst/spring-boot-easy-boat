@@ -1,5 +1,8 @@
 package com.novi.easyboat.model;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,6 +25,7 @@ public class Customer {
     String emailAddress;
 
     @OneToMany(mappedBy = "customer")
+    @Cascade(CascadeType.ALL)
     List<Booking> bookings;
 
     // Getters

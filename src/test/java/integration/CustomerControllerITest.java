@@ -29,36 +29,12 @@ public class CustomerControllerITest {
 
     @Test
     public void testSaveCustomer() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        var input = new CustomerInputDto();
-        input.firstname = "Henk";
-
-        var request = new HttpEntity<>(input, headers);
-
-        var response = this.restTemplate.postForEntity(BASE_URL + "/customers", request, CustomerDto.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.hasBody()).isTrue();
-        assertThat(response.getBody().firstname).isEqualTo("Henk");
+        // test a customer is saved correctly
     }
 
     @Test
     public void testGetCustomers() {
-        var input1 = new CustomerInputDto();
-        input1.firstname = "Henk";
-
-        var input2 = new CustomerInputDto();
-        input2.firstname = "Henk";
-
-        this.restTemplate.postForEntity(BASE_URL + "/customers", input1, CustomerDto.class);
-        this.restTemplate.postForEntity(BASE_URL + "/customers", input2, CustomerDto.class);
-
-        var response = this.restTemplate.getForEntity(BASE_URL + "/customers", CustomerDto[].class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.hasBody()).isTrue();
-        assertThat(response.getBody().length).isEqualTo(2);
+        // test we can retrieve a list of customers
     }
 
 }

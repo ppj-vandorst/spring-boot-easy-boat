@@ -52,8 +52,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public BookingDto saveBooking(@RequestBody BookingInputDto dto) {
-        var booking = bookingService.planBooking(dto.boatId, dto.customerId, dto.startTime, dto.endTime);
-        return BookingDto.fromBooking(booking);
+    public void saveBooking(@RequestBody BookingInputDto dto) {
+        bookingService.planBooking(dto.boatId, dto.customerId, dto.startTime, dto.endTime);
     }
 }

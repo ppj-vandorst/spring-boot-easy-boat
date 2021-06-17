@@ -60,7 +60,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking planBooking(Long boatId, Long customerId, LocalDateTime plannedStartTime, LocalDateTime plannedEndTime) {
+    public void planBooking(Long boatId, Long customerId, LocalDateTime plannedStartTime, LocalDateTime plannedEndTime) {
         var optionalCustomer = customerRepository.findById(customerId);
         var optionalBoat = boatRepository.findById(boatId);
 
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setPlannedEndTime(plannedEndTime);
         booking.setStatus(BookingStatus.PLANNED);
 
-        return bookingRepository.save(booking);
+        bookingRepository.save(booking);
     }
 
     private void validateBookingSlotIsFree(LocalDateTime startTime, LocalDateTime endTime, Boat boat) {

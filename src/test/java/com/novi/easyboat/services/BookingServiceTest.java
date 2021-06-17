@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +41,45 @@ public class BookingServiceTest {
     ArgumentCaptor<Booking> bookingCaptor;
 
     @Test
+    public void planBookingTest() {
+        Boat boat = new Boat();
+        boat.setName("test");
+        when(boatRepository.findById(1L)).thenReturn(Optional.of(boat));
+
+        Customer customer = new Customer();
+        customer.setFirstname("Henk");
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+
+        bookingService.planBooking(1L, 1L, LocalDateTime.parse("2021-01-01T12:00:00"), LocalDateTime.parse("2021-01-01T14:00:00"));
+
+        verify(bookingRepository).save(bookingCaptor.capture());
+
+        Booking booking = bookingCaptor.getValue();
+        assertThat(booking.getStatus()).isEqualTo(BookingStatus.PLANNED);
+        assertThat(booking.getCustomer()).isEqualTo(customer);
+    }
+
+    @Test
     public void planBookingShouldCorrectlyPlanAValidBooking() {
-        // Test implementation
+        var testBoat = new Boat();
+        testBoat.setId(1L);
+        testBoat.setName("Test boat");
+
+        var testCustomer = new Customer();
+        testCustomer.setId(1L);
+        testCustomer.setFirstname("Henk");
+
+        when(boatRepository.findById(1L)).thenReturn(Optional.of(testBoat));
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(testCustomer));
+
+        bookingService.planBooking(1L, 1L, LocalDateTime.parse("2021-01-01T12:00:00"),
+                LocalDateTime.parse("2021-01-01T16:00:00"));
+
+        verify(bookingRepository, times(1)).save(bookingCaptor.capture());
+        var booking = bookingCaptor.getValue();
+
+        assertThat(booking.getStatus()).isEqualTo(BookingStatus.PLANNED);
+        assertThat(booking.getBoat().getName()).isEqualTo("Test boat");
+        assertThat(booking.getCustomer().getFirstname()).isEqualTo("Henk");
     }
 }

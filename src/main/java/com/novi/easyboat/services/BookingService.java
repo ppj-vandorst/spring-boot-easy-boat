@@ -12,7 +12,7 @@ public interface BookingService {
 
     List<Booking> getBookingsForCustomer(Long customerId);
 
-    Booking planBooking(Long boatId, Long customerId, LocalDateTime plannedStartTime, LocalDateTime plannedEndTime);
+    void planBooking(Long boatId, Long customerId, LocalDateTime plannedStartTime, LocalDateTime plannedEndTime);
 
     Booking completeBooking(Long bookingId, LocalDateTime actualStartTime, LocalDateTime actualEndTime);
 }
