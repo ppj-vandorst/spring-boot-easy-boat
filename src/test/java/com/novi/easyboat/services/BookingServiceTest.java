@@ -44,7 +44,7 @@ public class BookingServiceTest {
     public void planBookingTest() {
         Boat boat = new Boat();
         boat.setName("test");
-        when(boatRepository.findById(1L)).thenReturn(Optional.of(boat));
+        when(boatRepository.findById(1L)).thenReturn(Optional.empty());
 
         Customer customer = new Customer();
         customer.setFirstname("Henk");
